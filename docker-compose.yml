@@ -1,0 +1,30 @@
+volumes:
+  postgres:
+    driver: local
+
+services:
+  db:
+    container_name: db
+    image: postgis/postgis:16-master
+    profiles:
+      - services
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    ports:
+      - ${POSTGRES_PORT}:${POSTGRES_PORT}
+    env_file:
+      - .env
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+
+  backend:
+    container_name: backend
+    build: .
+    volumes:
+      - ./src:/backend/src
+    env_file:
+      - .env
+    ports:
+      - '3000:3000'
